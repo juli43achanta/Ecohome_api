@@ -1,631 +1,662 @@
 <!DOCTYPE html>
-<html lang="es" data-theme="dark">
+<html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>EcoHome</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,700;0,900;1,700;1,900&family=Inter:wght@400;500;600&display=swap">
 <style>
-  :root {
-    --bg:         #0D1B2A;
-    --surface:    #1A2B3C;
-    --surface2:   #223344;
-    --border:     rgba(0,201,177,.15);
-    --accent:     #00C9B1;
-    --accent-dim: rgba(0,201,177,.12);
-    --text:       #E8F4F2;
-    --muted:      #6B8A95;
-    --danger:     #FF6B6B;
-    --win-color:  #0078D4;
-    --linux-color:#FF6600;
-    --mac-color:  #A2AAAD;
-    --and-color:  #3DDC84;
-  }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#05080C;
+  --s1:#0A0F16;
+  --s2:#0F1820;
+  --teal:#00F0C8;
+  --blue:#0066FF;
+  --orange:#FF5C28;
+  --text:#F0F4FF;
+  --muted:#4A6070;
+  --mid:#8AA0B0;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;overflow-x:hidden}
 
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* ── CURSOR GLOW ────────────────────────────────────── */
+.cursor-glow{
+  position:fixed;width:400px;height:400px;border-radius:50%;
+  background:radial-gradient(circle,rgba(0,240,200,.04) 0%,transparent 70%);
+  pointer-events:none;transform:translate(-50%,-50%);z-index:0;
+  transition:transform .1s linear;
+}
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Inter', system-ui, sans-serif;
-    font-size: 1rem;
-    line-height: 1.6;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
+/* ── NAV ─────────────────────────────────────────────── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1.2rem 3rem;
+  transition:background .4s,backdrop-filter .4s;
+}
+nav.scrolled{background:rgba(5,8,12,.85);backdrop-filter:blur(16px);border-bottom:1px solid rgba(0,240,200,.08)}
+.logo{font-family:'Barlow Condensed',sans-serif;font-size:1.5rem;font-weight:900;font-style:italic;letter-spacing:.02em;color:var(--text);text-decoration:none}
+.logo span{color:var(--teal)}
+.nav-links{display:flex;align-items:center;gap:2rem}
+.nav-links a{font-size:.82rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--mid);text-decoration:none;transition:color .2s}
+.nav-links a:hover{color:var(--teal)}
+.nav-btn{background:var(--teal);color:#05080C;font-family:'Inter',sans-serif;font-size:.8rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:.5rem 1.2rem;border-radius:3px;text-decoration:none;transition:all .2s}
+.nav-btn:hover{background:#00d4b0;transform:translateY(-1px)}
+@media(max-width:700px){.nav-links{display:none}}
 
-  /* Grid texture */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image:
-      linear-gradient(rgba(0,201,177,.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0,201,177,.03) 1px, transparent 1px);
-    background-size: 40px 40px;
-    pointer-events: none;
-    z-index: 0;
-  }
+/* ── HERO ─────────────────────────────────────────────── */
+.hero{
+  position:relative;min-height:100vh;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;text-align:center;
+  padding:8rem 2rem 4rem;overflow:hidden;
+}
 
-  /* ── NAV ─────────────────────────────────────────────────────── */
-  nav {
-    position: relative;
-    z-index: 10;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1.25rem 2.5rem;
-    border-bottom: 1px solid var(--border);
-    backdrop-filter: blur(8px);
-  }
+/* Malla de fondo */
+.hero::before{
+  content:'';position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(0,240,200,.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,240,200,.04) 1px,transparent 1px);
+  background-size:60px 60px;
+  mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,#000 30%,transparent 100%);
+}
+/* Glow central */
+.hero::after{
+  content:'';position:absolute;top:30%;left:50%;transform:translate(-50%,-50%);
+  width:700px;height:700px;border-radius:50%;
+  background:radial-gradient(circle,rgba(0,240,200,.07) 0%,rgba(0,102,255,.04) 50%,transparent 70%);
+  pointer-events:none;
+}
 
-  .logo {
-    display: flex;
-    align-items: center;
-    gap: .65rem;
-    font-family: 'Space Grotesk', sans-serif;
-    font-weight: 700;
-    font-size: 1.2rem;
-    letter-spacing: -.02em;
-    color: var(--text);
-    text-decoration: none;
-  }
+.hero-eyebrow{
+  font-family:'Barlow Condensed',sans-serif;font-size:.8rem;font-weight:700;
+  letter-spacing:.25em;text-transform:uppercase;color:var(--teal);
+  margin-bottom:1.5rem;position:relative;z-index:1;
+  opacity:0;transform:translateY(20px);animation:fadeUp .8s .2s forwards;
+}
+.hero h1{
+  font-family:'Barlow Condensed',sans-serif;font-style:italic;font-weight:900;
+  font-size:clamp(5rem,14vw,12rem);line-height:.92;letter-spacing:-.01em;
+  text-transform:uppercase;position:relative;z-index:1;
+  opacity:0;transform:translateY(40px);animation:fadeUp .9s .4s forwards;
+}
+.hero h1 .line2{
+  display:block;
+  background:linear-gradient(90deg,var(--teal),var(--blue));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.hero-sub{
+  font-size:1rem;color:var(--mid);max-width:44ch;margin:1.8rem auto 0;line-height:1.7;
+  position:relative;z-index:1;
+  opacity:0;transform:translateY(20px);animation:fadeUp .8s .7s forwards;
+}
+.hero-cta{
+  display:flex;gap:1rem;margin-top:2.5rem;justify-content:center;flex-wrap:wrap;
+  position:relative;z-index:1;
+  opacity:0;transform:translateY(20px);animation:fadeUp .8s .9s forwards;
+}
+.btn-main{
+  display:inline-flex;align-items:center;gap:.5rem;
+  background:var(--orange);color:#fff;
+  font-family:'Barlow Condensed',sans-serif;font-style:italic;font-weight:900;
+  font-size:1.1rem;letter-spacing:.05em;text-transform:uppercase;
+  padding:.7rem 2rem;border-radius:3px;text-decoration:none;
+  transition:all .2s;box-shadow:0 0 30px rgba(255,92,40,.3);
+}
+.btn-main:hover{background:#e04a1a;transform:translateY(-2px);box-shadow:0 4px 40px rgba(255,92,40,.5)}
+.btn-sec{
+  display:inline-flex;align-items:center;gap:.5rem;
+  background:transparent;color:var(--text);
+  font-family:'Barlow Condensed',sans-serif;font-style:italic;font-weight:700;
+  font-size:1.1rem;letter-spacing:.05em;text-transform:uppercase;
+  padding:.7rem 2rem;border-radius:3px;text-decoration:none;border:1px solid rgba(240,244,255,.2);
+  transition:all .2s;
+}
+.btn-sec:hover{border-color:var(--teal);color:var(--teal)}
 
-  .logo-icon {
-    width: 32px; height: 32px;
-    background: var(--accent);
-    border-radius: 8px;
-    display: grid;
-    place-items: center;
-    flex-shrink: 0;
-  }
+.scroll-hint{
+  position:absolute;bottom:2.5rem;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:.5rem;
+  color:var(--muted);font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;
+  opacity:0;animation:fadeUp .8s 1.4s forwards;
+}
+.scroll-hint .arrow{width:1px;height:40px;background:linear-gradient(var(--teal),transparent);animation:scrollPulse 2s infinite}
 
-  .logo-icon svg { width: 18px; height: 18px; fill: #0D1B2A; }
+/* ── PARTICLES ─────────────────────────────────────────── */
+.particles{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.particle{
+  position:absolute;border-radius:50%;
+  animation:float linear infinite;
+  background:var(--teal);opacity:0;
+}
 
-  .badge {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: .7rem;
-    font-weight: 600;
-    letter-spacing: .06em;
-    text-transform: uppercase;
-    padding: .2rem .55rem;
-    border-radius: 4px;
-    background: var(--accent-dim);
-    color: var(--accent);
-    border: 1px solid var(--border);
-  }
+/* ── SECCIÓN GENÉRICA ──────────────────────────────────── */
+section{position:relative;z-index:1;padding:8rem 2rem}
+.inner{max-width:1120px;margin:0 auto}
+.sec-label{
+  font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.75rem;
+  letter-spacing:.2em;text-transform:uppercase;color:var(--teal);margin-bottom:1rem;
+}
+.sec-title{
+  font-family:'Barlow Condensed',sans-serif;font-style:italic;font-weight:900;
+  font-size:clamp(2.5rem,6vw,5rem);line-height:.95;text-transform:uppercase;
+  margin-bottom:1.5rem;
+}
 
-  /* ── HERO ────────────────────────────────────────────────────── */
-  .hero {
-    position: relative;
-    z-index: 1;
-    max-width: 1120px;
-    margin: 0 auto;
-    padding: 5rem 2.5rem 4rem;
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 3rem;
-    align-items: center;
-  }
+/* ── FEATURES ──────────────────────────────────────────── */
+.features{background:var(--s1)}
+.features-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center;
+  margin-top:4rem;
+}
+@media(max-width:800px){.features-grid{grid-template-columns:1fr}}
+.feature-list{display:flex;flex-direction:column;gap:1.5rem}
+.feat{
+  display:flex;gap:1.2rem;align-items:flex-start;
+  padding:1.2rem;background:var(--s2);border-radius:6px;border:1px solid rgba(0,240,200,.06);
+  transition:border-color .3s,transform .3s;
+}
+.feat:hover{border-color:rgba(0,240,200,.2);transform:translateX(4px)}
+.feat-icon{
+  width:40px;height:40px;border-radius:6px;display:grid;place-items:center;flex-shrink:0;
+  background:rgba(0,240,200,.08);
+}
+.feat-icon svg{width:20px;height:20px;fill:var(--teal)}
+.feat h3{font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:700;letter-spacing:.03em;text-transform:uppercase;margin-bottom:.3rem}
+.feat p{font-size:.8rem;color:var(--mid);line-height:1.6}
 
-  @media (max-width: 760px) {
-    .hero { grid-template-columns: 1fr; }
-    .hero-visual { display: none; }
-  }
+/* ── MOCKUP LAPTOP ─────────────────────────────────────── */
+.mockup-wrap{position:relative;display:flex;justify-content:center}
+.laptop{width:100%;max-width:480px;filter:drop-shadow(0 20px 60px rgba(0,240,200,.15))}
 
-  .eyebrow {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: .78rem;
-    font-weight: 600;
-    letter-spacing: .1em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: .8rem;
-  }
+/* ── SCREENSHOTS ───────────────────────────────────────── */
+.screenshots{overflow:hidden}
+.screens-intro{text-align:center;margin-bottom:4rem}
+.screens-intro .sec-title{margin-bottom:.5rem}
+.screens-intro p{color:var(--mid);font-size:.9rem}
+.screens-scroll{
+  display:flex;gap:1.5rem;overflow-x:auto;padding:1rem 2rem 2rem;
+  scrollbar-width:thin;scrollbar-color:rgba(0,240,200,.3) transparent;
+  -webkit-overflow-scrolling:touch;
+}
+.screens-scroll::-webkit-scrollbar{height:3px}
+.screens-scroll::-webkit-scrollbar-track{background:transparent}
+.screens-scroll::-webkit-scrollbar-thumb{background:rgba(0,240,200,.3);border-radius:2px}
+.screen-card{
+  flex-shrink:0;width:220px;
+  background:var(--s1);border:1px solid rgba(0,240,200,.1);border-radius:12px;
+  overflow:hidden;transition:transform .3s,box-shadow .3s;
+}
+.screen-card:hover{transform:translateY(-8px) scale(1.02);box-shadow:0 20px 60px rgba(0,240,200,.12)}
+.screen-bar{height:28px;background:var(--s2);display:flex;align-items:center;padding:0 .7rem;gap:.4rem}
+.screen-bar span{width:7px;height:7px;border-radius:50%}
+.screen-content{padding:.8rem;aspect-ratio:9/16;position:relative;overflow:hidden}
 
-  h1 {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: clamp(2.4rem, 5vw, 3.6rem);
-    font-weight: 700;
-    line-height: 1.1;
-    letter-spacing: -.03em;
-    text-wrap: balance;
-    color: var(--text);
-    margin-bottom: 1.1rem;
-  }
+/* ── DOWNLOADS ─────────────────────────────────────────── */
+.downloads{background:var(--s1);text-align:center}
+.dl-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-top:3rem;text-align:left;
+}
+@media(max-width:900px){.dl-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:500px){.dl-grid{grid-template-columns:1fr}}
+.dl-card{
+  background:var(--s2);border:1px solid rgba(255,255,255,.06);border-radius:8px;
+  padding:1.5rem;text-decoration:none;display:flex;flex-direction:column;gap:.8rem;
+  transition:all .25s;position:relative;overflow:hidden;
+}
+.dl-card::after{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:var(--pcolor,var(--teal));transform:scaleX(0);transform-origin:left;
+  transition:transform .3s;
+}
+.dl-card:hover::after{transform:scaleX(1)}
+.dl-card:hover{border-color:rgba(255,255,255,.12);transform:translateY(-4px);background:#141e2a}
+.dl-card.soon{opacity:.4;pointer-events:none}
+.dl-os{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-weight:900;font-size:1.4rem;text-transform:uppercase;letter-spacing:.02em}
+.dl-spec{font-size:.75rem;color:var(--muted);line-height:1.5;flex:1}
+.dl-btn{
+  display:inline-flex;align-items:center;gap:.4rem;
+  font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.85rem;
+  letter-spacing:.08em;text-transform:uppercase;
+  color:var(--pcolor,var(--teal));
+}
+.dl-btn svg{width:14px;height:14px;fill:currentColor;transition:transform .2s}
+.dl-card:hover .dl-btn svg{transform:translateY(2px)}
 
-  h1 span { color: var(--accent); }
+/* ── STATS ─────────────────────────────────────────────── */
+.stats-row{
+  display:flex;justify-content:center;gap:0;flex-wrap:wrap;
+  border-top:1px solid rgba(0,240,200,.08);border-bottom:1px solid rgba(0,240,200,.08);
+}
+.stat{
+  flex:1;min-width:160px;padding:2.5rem 2rem;text-align:center;
+  border-right:1px solid rgba(0,240,200,.08);
+}
+.stat:last-child{border-right:none}
+.stat .num{
+  font-family:'Barlow Condensed',sans-serif;font-style:italic;font-weight:900;
+  font-size:3rem;line-height:1;color:var(--teal);display:block;
+  font-variant-numeric:tabular-nums;
+}
+.stat .desc{font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-top:.3rem}
 
-  .subtitle {
-    font-size: 1.1rem;
-    color: var(--muted);
-    max-width: 44ch;
-    line-height: 1.65;
-    margin-bottom: 2.2rem;
-  }
+/* ── FOOTER ─────────────────────────────────────────────── */
+footer{
+  background:var(--bg);border-top:1px solid rgba(0,240,200,.08);
+  padding:2rem 3rem;display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:1rem;
+}
+.footer-logo{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-weight:900;font-size:1.1rem;color:var(--text)}
+.footer-logo span{color:var(--teal)}
+footer p{font-size:.75rem;color:var(--muted)}
+.api-pill{
+  display:flex;align-items:center;gap:.5rem;
+  background:var(--s1);border:1px solid rgba(0,240,200,.1);
+  border-radius:20px;padding:.3rem .8rem;font-size:.72rem;color:var(--mid);
+}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--muted);flex-shrink:0;transition:background .3s}
+.dot.on{background:var(--teal);box-shadow:0 0 6px var(--teal)}
+.dot.off{background:#F87171}
 
-  .hero-cta {
-    display: flex;
-    gap: .75rem;
-    flex-wrap: wrap;
-  }
+/* ── REVEAL ANIMATION ──────────────────────────────────── */
+.reveal{opacity:0;transform:translateY(40px);transition:opacity .8s,transform .8s}
+.reveal.visible{opacity:1;transform:none}
+.reveal-left{opacity:0;transform:translateX(-40px);transition:opacity .8s,transform .8s}
+.reveal-left.visible{opacity:1;transform:none}
+.reveal-right{opacity:0;transform:translateX(40px);transition:opacity .8s,transform .8s}
+.reveal-right.visible{opacity:1;transform:none}
 
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    gap: .5rem;
-    padding: .7rem 1.4rem;
-    border-radius: 6px;
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: .9rem;
-    font-weight: 600;
-    text-decoration: none;
-    transition: all .18s ease;
-    cursor: pointer;
-  }
-
-  .btn-primary {
-    background: var(--accent);
-    color: #0D1B2A;
-    border: 1px solid transparent;
-  }
-  .btn-primary:hover { background: #00b39e; transform: translateY(-1px); }
-
-  .btn-outline {
-    background: transparent;
-    color: var(--text);
-    border: 1px solid var(--border);
-  }
-  .btn-outline:hover { background: var(--surface); border-color: var(--accent); }
-
-  /* Hero visual */
-  .hero-visual {
-    width: 220px;
-    aspect-ratio: 1;
-    position: relative;
-  }
-
-  .hero-visual svg { width: 100%; height: 100%; }
-
-  /* ── STATS ───────────────────────────────────────────────────── */
-  .stats {
-    position: relative;
-    z-index: 1;
-    max-width: 1120px;
-    margin: 0 auto;
-    padding: 0 2.5rem 3.5rem;
-    display: flex;
-    gap: 2rem;
-    flex-wrap: wrap;
-  }
-
-  .stat {
-    display: flex;
-    align-items: center;
-    gap: .6rem;
-    font-size: .85rem;
-    color: var(--muted);
-  }
-
-  .stat strong {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 1rem;
-    font-weight: 700;
-    color: var(--text);
-    font-variant-numeric: tabular-nums;
-  }
-
-  .stat-dot {
-    width: 7px; height: 7px;
-    border-radius: 50%;
-    background: var(--accent);
-    flex-shrink: 0;
-  }
-
-  /* ── DOWNLOADS ───────────────────────────────────────────────── */
-  .section {
-    position: relative;
-    z-index: 1;
-    max-width: 1120px;
-    margin: 0 auto;
-    padding: 0 2.5rem 5rem;
-  }
-
-  .section-label {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: .72rem;
-    font-weight: 600;
-    letter-spacing: .1em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 1.4rem;
-  }
-
-  .downloads {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1rem;
-  }
-
-  @media (max-width: 900px) { .downloads { grid-template-columns: repeat(2, 1fr); } }
-  @media (max-width: 500px) { .downloads { grid-template-columns: 1fr; } }
-
-  .dl-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 1.6rem 1.4rem;
-    text-decoration: none;
-    display: flex;
-    flex-direction: column;
-    gap: .85rem;
-    transition: all .18s ease;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .dl-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 2px;
-    background: var(--platform-color, var(--accent));
-    opacity: 0;
-    transition: opacity .18s;
-  }
-
-  .dl-card:hover {
-    background: var(--surface2);
-    transform: translateY(-2px);
-    border-color: color-mix(in srgb, var(--platform-color, var(--accent)) 40%, transparent);
-  }
-
-  .dl-card:hover::before { opacity: 1; }
-
-  .dl-icon {
-    width: 44px; height: 44px;
-    border-radius: 10px;
-    display: grid;
-    place-items: center;
-    background: color-mix(in srgb, var(--platform-color, var(--accent)) 12%, transparent);
-  }
-
-  .dl-icon svg { width: 24px; height: 24px; }
-
-  .dl-name {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 1rem;
-    font-weight: 700;
-    color: var(--text);
-  }
-
-  .dl-desc {
-    font-size: .82rem;
-    color: var(--muted);
-    line-height: 1.5;
-    flex: 1;
-  }
-
-  .dl-action {
-    display: flex;
-    align-items: center;
-    gap: .4rem;
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: .8rem;
-    font-weight: 600;
-    color: var(--platform-color, var(--accent));
-  }
-
-  .dl-soon {
-    opacity: .45;
-    pointer-events: none;
-    cursor: default;
-  }
-
-  .dl-soon .dl-action { color: var(--muted); }
-
-  .soon-tag {
-    font-size: .65rem;
-    font-weight: 600;
-    letter-spacing: .06em;
-    text-transform: uppercase;
-    padding: .15rem .4rem;
-    border-radius: 3px;
-    background: var(--surface2);
-    color: var(--muted);
-    border: 1px solid rgba(255,255,255,.06);
-  }
-
-  /* ── HOW IT WORKS ─────────────────────────────────────────────── */
-  .how {
-    position: relative;
-    z-index: 1;
-    max-width: 1120px;
-    margin: 0 auto;
-    padding: 0 2.5rem 5rem;
-  }
-
-  .steps {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
-  }
-
-  @media (max-width: 700px) { .steps { grid-template-columns: 1fr; } }
-
-  .step {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 1.5rem 1.4rem;
-  }
-
-  .step-num {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 1.6rem;
-    font-weight: 700;
-    color: var(--accent);
-    opacity: .35;
-    margin-bottom: .6rem;
-    font-variant-numeric: tabular-nums;
-  }
-
-  .step h3 {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: .95rem;
-    font-weight: 600;
-    margin-bottom: .4rem;
-    color: var(--text);
-  }
-
-  .step p {
-    font-size: .83rem;
-    color: var(--muted);
-    line-height: 1.55;
-  }
-
-  /* ── FOOTER ──────────────────────────────────────────────────── */
-  footer {
-    position: relative;
-    z-index: 1;
-    border-top: 1px solid var(--border);
-    padding: 1.5rem 2.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 1rem;
-    font-size: .8rem;
-    color: var(--muted);
-  }
-
-  .api-status {
-    display: flex;
-    align-items: center;
-    gap: .5rem;
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: .75rem;
-    font-weight: 500;
-  }
-
-  .status-dot {
-    width: 7px; height: 7px;
-    border-radius: 50%;
-    background: var(--muted);
-    transition: background .3s;
-  }
-  .status-dot.online  { background: var(--accent); box-shadow: 0 0 6px var(--accent); }
-  .status-dot.offline { background: var(--danger); }
-
-  .divider {
-    height: 1px;
-    background: var(--border);
-    margin: 0 2.5rem 3rem;
-    position: relative;
-    z-index: 1;
-    max-width: calc(1120px - 5rem);
-    margin-left: auto;
-    margin-right: auto;
-  }
+/* ── KEYFRAMES ──────────────────────────────────────────── */
+@keyframes fadeUp{to{opacity:1;transform:none}}
+@keyframes scrollPulse{0%,100%{opacity:1;transform:scaleY(1)}50%{opacity:.4;transform:scaleY(.6)}}
+@keyframes float{
+  0%{transform:translateY(0) translateX(0);opacity:0}
+  10%{opacity:.6}
+  90%{opacity:.2}
+  100%{transform:translateY(-100vh) translateX(var(--dx));opacity:0}
+}
 </style>
 </head>
 <body>
 
+<div class="cursor-glow" id="cursorGlow"></div>
+
+<!-- PARTÍCULAS -->
+<div class="particles" id="particles"></div>
+
 <!-- NAV -->
-<nav>
-  <a href="/" class="logo">
-    <span class="logo-icon">
-      <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-    </span>
-    EcoHome
-  </a>
-  <span class="badge">v1.0.0</span>
+<nav id="nav">
+  <a href="/" class="logo">Eco<span>Home</span></a>
+  <div class="nav-links">
+    <a href="#features">Características</a>
+    <a href="#screenshots">Capturas</a>
+    <a href="#descargas">Descargar</a>
+    <a href="#descargas" class="nav-btn">Descargar</a>
+  </div>
 </nav>
 
 <!-- HERO -->
-<section class="hero">
-  <div>
-    <p class="eyebrow">Domótica inteligente</p>
-    <h1>Tu hogar,<br><span>siempre conectado</span></h1>
-    <p class="subtitle">
-      Controla luces, calefacción y dispositivos IoT desde cualquier dispositivo.
-      Instala la app en minutos y conéctate a tu servidor EcoHome.
-    </p>
-    <div class="hero-cta">
-      <a href="#descargas" class="btn btn-primary">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zm-8 2V5h2v6h1.17L12 13.17 9.83 11H11zm-6 7h14v2H5z"/></svg>
-        Descargar app
-      </a>
-      <a href="/api/privacy" class="btn btn-outline" target="_blank">
-        Ver API
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-      </a>
-    </div>
+<div class="hero">
+  <p class="hero-eyebrow">Sistema de domótica inteligente</p>
+  <h1>
+    Tu hogar,<br>
+    <span class="line2">en tus manos</span>
+  </h1>
+  <p class="hero-sub">Controla cada rincón de tu hogar desde cualquier dispositivo. Luces, calefacción, sensores IoT — todo en tiempo real, con seguridad de nivel profesional.</p>
+  <div class="hero-cta">
+    <a href="#descargas" class="btn-main">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zm-8 2V5h2v6h1.17L12 13.17 9.83 11H11zm-6 7h14v2H5z"/></svg>
+      Descargar gratis
+    </a>
+    <a href="#features" class="btn-sec">Ver características</a>
   </div>
-
-  <!-- Ilustración casa SVG -->
-  <div class="hero-visual" aria-hidden="true">
-    <svg viewBox="0 0 220 220" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <radialGradient id="glow" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stop-color="#00C9B1" stop-opacity=".25"/>
-          <stop offset="100%" stop-color="#00C9B1" stop-opacity="0"/>
-        </radialGradient>
-      </defs>
-      <circle cx="110" cy="110" r="100" fill="url(#glow)"/>
-      <circle cx="110" cy="110" r="90" stroke="#00C9B1" stroke-opacity=".08" stroke-width="1"/>
-      <circle cx="110" cy="110" r="65" stroke="#00C9B1" stroke-opacity=".12" stroke-width="1"/>
-
-      <!-- Casa -->
-      <path d="M60 120 L110 70 L160 120 L160 170 L60 170 Z" fill="#1A2B3C" stroke="#00C9B1" stroke-width="1.5" stroke-opacity=".5"/>
-      <!-- Tejado -->
-      <path d="M52 122 L110 62 L168 122" stroke="#00C9B1" stroke-width="2" stroke-linecap="round"/>
-      <!-- Puerta -->
-      <rect x="95" y="140" width="30" height="30" rx="15" fill="#00C9B1" fill-opacity=".15" stroke="#00C9B1" stroke-width="1" stroke-opacity=".5"/>
-      <!-- Ventanas -->
-      <rect x="68" y="128" width="22" height="18" rx="2" fill="#00C9B1" fill-opacity=".2" stroke="#00C9B1" stroke-opacity=".4" stroke-width="1"/>
-      <rect x="130" y="128" width="22" height="18" rx="2" fill="#00C9B1" fill-opacity=".2" stroke="#00C9B1" stroke-opacity=".4" stroke-width="1"/>
-
-      <!-- Puntos IoT -->
-      <circle cx="79" cy="137" r="3" fill="#00C9B1" opacity=".8"/>
-      <circle cx="141" cy="137" r="3" fill="#00C9B1" opacity=".8"/>
-      <circle cx="110" cy="95" r="3" fill="#00C9B1" opacity=".6"/>
-
-      <!-- Señal wifi -->
-      <path d="M102 88 Q110 82 118 88" stroke="#00C9B1" stroke-opacity=".5" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-      <path d="M97 84 Q110 75 123 84" stroke="#00C9B1" stroke-opacity=".3" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-    </svg>
+  <div class="scroll-hint">
+    <span>Scroll</span>
+    <div class="arrow"></div>
   </div>
-</section>
-
-<!-- STATS -->
-<div class="stats">
-  <div class="stat"><span class="stat-dot"></span><strong>4</strong> módulos IoT</div>
-  <div class="stat"><span class="stat-dot"></span><strong>JWT</strong> autenticación segura</div>
-  <div class="stat"><span class="stat-dot"></span><strong>MQTT</strong> tiempo real</div>
-  <div class="stat"><span class="stat-dot"></span><strong>Open source</strong></div>
 </div>
 
-<div class="divider"></div>
+<!-- STATS -->
+<div class="stats-row reveal">
+  <div class="stat"><span class="num">100%</span><div class="desc">Gratuito, siempre</div></div>
+  <div class="stat"><span class="num">&lt;5</span><div class="desc">Min de instalación</div></div>
+  <div class="stat"><span class="num">4</span><div class="desc">Plataformas</div></div>
+  <div class="stat"><span class="num">∞</span><div class="desc">Dispositivos conectados</div></div>
+</div>
 
-<!-- DESCARGAS -->
-<section class="section" id="descargas">
-  <p class="section-label">Descarga · Elige tu plataforma</p>
-  <div class="downloads">
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="inner">
+    <div class="features-grid">
+      <div class="reveal-left">
+        <p class="sec-label">Tecnología</p>
+        <h2 class="sec-title">Control total.<br>Sin compromisos.</h2>
+        <p style="color:var(--mid);font-size:.9rem;margin-bottom:2rem;line-height:1.7">Una API REST robusta con Spring Boot 3, autenticación JWT, cifrado BCrypt y comunicación MQTT en tiempo real.</p>
+        <div class="feature-list">
+          <div class="feat">
+            <div class="feat-icon"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 4l5 2.18V11c0 3.5-2.33 6.79-5 7.93-2.67-1.14-5-4.43-5-7.93V7.18L12 5z"/></svg></div>
+            <div><h3>Seguridad JWT + BCrypt</h3><p>Tokens firmados HS256, contraseñas cifradas, rate limiting en login y validación por endpoint.</p></div>
+          </div>
+          <div class="feat">
+            <div class="feat-icon"><svg viewBox="0 0 24 24"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3a4.237 4.237 0 00-6 0zm-4-4l2 2a7.074 7.074 0 0110 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg></div>
+            <div><h3>MQTT en tiempo real</h3><p>Mensajería IoT con Eclipse Paho. Fallback automático si el broker no está disponible.</p></div>
+          </div>
+          <div class="feat">
+            <div class="feat-icon"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-5 11.5v-3l3.5 3.5-3.5 3.5v-3H9v-1h6zm-6-2L5.5 10 9 6.5v3H15v1H9v3z"/></svg></div>
+            <div><h3>WebSocket STOMP</h3><p>Actualizaciones instantáneas en la UI sin polling. Autenticación JWT en la conexión.</p></div>
+          </div>
+          <div class="feat">
+            <div class="feat-icon"><svg viewBox="0 0 24 24"><path d="M4 6h18V4H4c-1.1 0-2 .9-2 2v11H0v3h14v-3H4V6zm19 2h-6c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h6c.55 0 1-.45 1-1V9c0-.55-.45-1-1-1zm-1 9h-4v-7h4v7z"/></svg></div>
+            <div><h3>Multiplataforma</h3><p>Windows, Linux, Mac y Android. Una API para todos los clientes.</p></div>
+          </div>
+        </div>
+      </div>
 
-    <!-- Windows -->
-    <a href="WINDOWS_DOWNLOAD_URL" class="dl-card" style="--platform-color: #0078D4" id="win-card">
-      <div class="dl-icon" style="--platform-color: #0078D4">
-        <svg viewBox="0 0 24 24" fill="#0078D4"><path d="M3 12V6.75l6-1.32v6.57H3zm17-9v8.75h-7V3.5L20 3zM3 13h6v6.57l-6-1.32V13zm17 0v8.75l-7-1.05V13h7z"/></svg>
-      </div>
-      <div>
-        <p class="dl-name">Windows</p>
-        <p class="dl-desc">Windows 10 / 11 · x64<br>Incluye JRE — sin instalaciones previas</p>
-      </div>
-      <div class="dl-action">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zm-8 2V5h2v6h1.17L12 13.17 9.83 11H11zm-6 7h14v2H5z"/></svg>
-        Descargar .zip
-      </div>
-    </a>
+      <!-- Mockup laptop -->
+      <div class="reveal-right mockup-wrap">
+        <svg class="laptop" viewBox="0 0 480 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Marco laptop -->
+          <rect x="20" y="10" width="440" height="270" rx="10" fill="#0F1820" stroke="rgba(0,240,200,.2)" stroke-width="1.5"/>
+          <!-- Pantalla -->
+          <rect x="30" y="20" width="420" height="250" rx="6" fill="#05080C"/>
+          <!-- Topbar app -->
+          <rect x="30" y="20" width="420" height="32" rx="6" fill="#0A0F16"/>
+          <rect x="30" y="44" width="420" height="8" fill="#0A0F16"/>
+          <circle cx="52" cy="36" r="6" fill="rgba(0,240,200,.3)"/>
+          <text x="70" y="40" font-family="sans-serif" font-size="11" font-weight="bold" fill="#00F0C8">EcoHome</text>
+          <circle cx="374" cy="36" r="8" fill="rgba(0,240,200,.15)" stroke="rgba(0,240,200,.3)" stroke-width="1"/>
+  <text x="374" y="40" font-family="sans-serif" font-size="9" fill="#00F0C8" text-anchor="middle">👤</text>
+          <!-- Sidebar -->
+          <rect x="30" y="52" width="70" height="218" fill="#0A0F16"/>
+          <rect x="36" y="68" width="58" height="28" rx="4" fill="rgba(0,240,200,.15)"/>
+          <text x="65" y="87" font-family="sans-serif" font-size="8" fill="#00F0C8" text-anchor="middle">🏠 Inicio</text>
+          <text x="65" y="112" font-family="sans-serif" font-size="8" fill="#4A6070" text-anchor="middle">💡 Luces</text>
+          <text x="65" y="132" font-family="sans-serif" font-size="8" fill="#4A6070" text-anchor="middle">🌡 Calef.</text>
+          <text x="65" y="152" font-family="sans-serif" font-size="8" fill="#4A6070" text-anchor="middle">📋 Historial</text>
+          <!-- Main content -->
+          <text x="115" y="75" font-family="sans-serif" font-size="12" font-weight="bold" fill="#F0F4FF">Bienvenido de vuelta</text>
+          <!-- Device cards -->
+          <rect x="110" y="85" width="100" height="70" rx="6" fill="#0F1820" stroke="rgba(0,240,200,.15)" stroke-width="1"/>
+          <text x="160" y="108" font-family="sans-serif" font-size="18" text-anchor="middle">💡</text>
+          <text x="160" y="124" font-family="sans-serif" font-size="8" fill="#F0F4FF" text-anchor="middle">Sala — ON</text>
+          <rect x="120" y="132" width="80" height="12" rx="6" fill="rgba(0,240,200,.1)"/>
+          <rect x="120" y="132" width="58" height="12" rx="6" fill="rgba(0,240,200,.5)"/>
+          <text x="160" y="146" font-family="sans-serif" font-size="7" fill="#4A6070" text-anchor="middle">Brillo 72%</text>
 
-    <!-- Linux -->
-    <a href="LINUX_DOWNLOAD_URL" class="dl-card dl-soon" style="--platform-color: #FF6600">
-      <div class="dl-icon" style="--platform-color: #FF6600">
-        <svg viewBox="0 0 24 24" fill="#FF6600"><path d="M12 2a10 10 0 100 20A10 10 0 0012 2zm0 18a8 8 0 110-16 8 8 0 010 16zm-1-5h2v2h-2zm0-8h2v6h-2z"/></svg>
-      </div>
-      <div>
-        <p class="dl-name">Linux <span class="soon-tag">Próximamente</span></p>
-        <p class="dl-desc">Ubuntu · Debian · Fedora<br>.deb y .rpm</p>
-      </div>
-      <div class="dl-action">Próximamente</div>
-    </a>
+          <rect x="220" y="85" width="100" height="70" rx="6" fill="#0F1820" stroke="rgba(0,102,255,.2)" stroke-width="1"/>
+          <text x="270" y="108" font-family="sans-serif" font-size="18" text-anchor="middle">🌡</text>
+          <text x="270" y="124" font-family="sans-serif" font-size="8" fill="#F0F4FF" text-anchor="middle">Calef. — 22°C</text>
+          <rect x="230" y="132" width="80" height="12" rx="6" fill="rgba(0,102,255,.1)"/>
+          <rect x="230" y="132" width="55" height="12" rx="6" fill="rgba(0,102,255,.5)"/>
+          <text x="270" y="146" font-family="sans-serif" font-size="7" fill="#4A6070" text-anchor="middle">Target 22°C</text>
 
-    <!-- Mac -->
-    <a href="MAC_DOWNLOAD_URL" class="dl-card dl-soon" style="--platform-color: #A2AAAD">
-      <div class="dl-icon" style="--platform-color: #A2AAAD">
-        <svg viewBox="0 0 24 24" fill="#A2AAAD"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
-      </div>
-      <div>
-        <p class="dl-name">macOS <span class="soon-tag">Próximamente</span></p>
-        <p class="dl-desc">macOS 12 Monterey o superior<br>Intel y Apple Silicon</p>
-      </div>
-      <div class="dl-action">Próximamente</div>
-    </a>
+          <rect x="330" y="85" width="100" height="70" rx="6" fill="#0F1820" stroke="rgba(255,92,40,.2)" stroke-width="1"/>
+          <text x="380" y="108" font-family="sans-serif" font-size="18" text-anchor="middle">🔒</text>
+          <text x="380" y="124" font-family="sans-serif" font-size="8" fill="#F0F4FF" text-anchor="middle">Alarma — OFF</text>
+          <rect x="340" y="132" width="80" height="12" rx="6" fill="rgba(255,92,40,.08)"/>
+          <text x="380" y="146" font-family="sans-serif" font-size="7" fill="#4A6070" text-anchor="middle">Sin alertas</text>
 
-    <!-- Android -->
-    <a href="PLAY_STORE_URL" class="dl-card dl-soon" style="--platform-color: #3DDC84">
-      <div class="dl-icon" style="--platform-color: #3DDC84">
-        <svg viewBox="0 0 24 24" fill="#3DDC84"><path d="M17.523 15.341L6.477 8.66A1.5 1.5 0 004 9.928v10.144a1.5 1.5 0 002.477 1.268l11.046-6.682a1.5 1.5 0 000-2.317z"/></svg>
+          <!-- Historial reciente -->
+          <text x="115" y="175" font-family="sans-serif" font-size="9" font-weight="bold" fill="#4A6070">ACTIVIDAD RECIENTE</text>
+          <rect x="110" y="182" width="320" height="1" fill="rgba(0,240,200,.08)"/>
+          <text x="115" y="200" font-family="sans-serif" font-size="8" fill="#8AA0B0">💡 Sala encendida</text>
+          <text x="400" y="200" font-family="sans-serif" font-size="7" fill="#4A6070" text-anchor="end">hace 2 min</text>
+          <text x="115" y="216" font-family="sans-serif" font-size="8" fill="#8AA0B0">🌡 Temperatura ajustada a 22°C</text>
+          <text x="400" y="216" font-family="sans-serif" font-size="7" fill="#4A6070" text-anchor="end">hace 15 min</text>
+          <text x="115" y="232" font-family="sans-serif" font-size="8" fill="#8AA0B0">💡 Dormitorio apagado</text>
+          <text x="400" y="232" font-family="sans-serif" font-size="7" fill="#4A6070" text-anchor="end">hace 1h</text>
+          <!-- Base laptop -->
+          <rect x="0" y="280" width="480" height="12" rx="4" fill="#0A0F16" stroke="rgba(0,240,200,.1)" stroke-width="1"/>
+          <rect x="200" y="282" width="80" height="8" rx="2" fill="#0F1820"/>
+        </svg>
       </div>
-      <div>
-        <p class="dl-name">Android <span class="soon-tag">Próximamente</span></p>
-        <p class="dl-desc">Android 8.0+<br>Disponible en Google Play</p>
-      </div>
-      <div class="dl-action">Ver en Play Store</div>
-    </a>
+    </div>
+  </div>
+</section>
+
+<!-- SCREENSHOTS MÓVIL -->
+<section class="screenshots" id="screenshots">
+  <div class="inner screens-intro reveal">
+    <p class="sec-label">Capturas de pantalla</p>
+    <h2 class="sec-title">Diseñado para<br>cada dispositivo</h2>
+    <p>Interfaz nativa en Windows, Linux y Mac. App Android próximamente.</p>
+  </div>
+  <div class="screens-scroll">
+
+    <!-- Login -->
+    <div class="screen-card reveal" style="transition-delay:.1s">
+      <div class="screen-bar"><span style="background:#F87171"></span><span style="background:#FBBF24"></span><span style="background:#34D399"></span></div>
+      <svg class="screen-content" viewBox="0 0 220 390" fill="none">
+        <rect width="220" height="390" fill="#05080C"/>
+        <text x="110" y="60" font-family="sans-serif" font-size="22" font-weight="bold" fill="#00F0C8" text-anchor="middle">EcoHome</text>
+        <text x="110" y="80" font-family="sans-serif" font-size="10" fill="#4A6070" text-anchor="middle">Sistema de domótica</text>
+        <rect x="20" y="120" width="180" height="36" rx="6" fill="#0A0F16" stroke="rgba(0,240,200,.2)" stroke-width="1"/>
+        <text x="30" y="143" font-family="sans-serif" font-size="10" fill="#4A6070">usuario@email.com</text>
+        <rect x="20" y="165" width="180" height="36" rx="6" fill="#0A0F16" stroke="rgba(0,240,200,.2)" stroke-width="1"/>
+        <text x="30" y="188" font-family="sans-serif" font-size="10" fill="#4A6070">••••••••</text>
+        <rect x="20" y="215" width="180" height="38" rx="6" fill="#00F0C8"/>
+        <text x="110" y="239" font-family="sans-serif" font-size="11" font-weight="bold" fill="#05080C" text-anchor="middle">INICIAR SESIÓN</text>
+        <text x="110" y="280" font-family="sans-serif" font-size="9" fill="#4A6070" text-anchor="middle">¿Sin cuenta? Regístrate</text>
+      </svg>
+    </div>
+
+    <!-- Dashboard -->
+    <div class="screen-card reveal" style="transition-delay:.2s">
+      <div class="screen-bar"><span style="background:#F87171"></span><span style="background:#FBBF24"></span><span style="background:#34D399"></span></div>
+      <svg class="screen-content" viewBox="0 0 220 390" fill="none">
+        <rect width="220" height="390" fill="#05080C"/>
+        <rect width="220" height="40" fill="#0A0F16"/>
+        <text x="14" y="25" font-family="sans-serif" font-size="11" font-weight="bold" fill="#00F0C8">EcoHome</text>
+        <text x="14" y="65" font-family="sans-serif" font-size="14" font-weight="bold" fill="#F0F4FF">Mis Dispositivos</text>
+        <rect x="14" y="78" width="90" height="80" rx="8" fill="#0A0F16" stroke="rgba(0,240,200,.2)" stroke-width="1"/>
+        <text x="59" y="108" font-family="sans-serif" font-size="22" text-anchor="middle">💡</text>
+        <text x="59" y="125" font-family="sans-serif" font-size="8" fill="#F0F4FF" text-anchor="middle">Sala</text>
+        <text x="59" y="140" font-family="sans-serif" font-size="7" fill="#00F0C8" text-anchor="middle">ON</text>
+        <rect x="116" y="78" width="90" height="80" rx="8" fill="#0A0F16" stroke="rgba(0,102,255,.2)" stroke-width="1"/>
+        <text x="161" y="108" font-family="sans-serif" font-size="22" text-anchor="middle">🌡</text>
+        <text x="161" y="125" font-family="sans-serif" font-size="8" fill="#F0F4FF" text-anchor="middle">Calefacción</text>
+        <text x="161" y="140" font-family="sans-serif" font-size="7" fill="#0066FF" text-anchor="middle">22°C</text>
+        <rect x="14" y="168" width="90" height="80" rx="8" fill="#0A0F16" stroke="rgba(255,92,40,.15)" stroke-width="1"/>
+        <text x="59" y="198" font-family="sans-serif" font-size="22" text-anchor="middle">🔒</text>
+        <text x="59" y="215" font-family="sans-serif" font-size="8" fill="#F0F4FF" text-anchor="middle">Alarma</text>
+        <text x="59" y="230" font-family="sans-serif" font-size="7" fill="#4A6070" text-anchor="middle">OFF</text>
+        <rect x="116" y="168" width="90" height="80" rx="8" fill="#0A0F16" stroke="rgba(0,240,200,.08)" stroke-width="1"/>
+        <text x="161" y="198" font-family="sans-serif" font-size="22" text-anchor="middle">🪟</text>
+        <text x="161" y="215" font-family="sans-serif" font-size="8" fill="#F0F4FF" text-anchor="middle">Persianas</text>
+        <text x="161" y="230" font-family="sans-serif" font-size="7" fill="#4A6070" text-anchor="middle">Cerradas</text>
+        <text x="14" y="270" font-family="sans-serif" font-size="9" font-weight="bold" fill="#4A6070">ACTIVIDAD RECIENTE</text>
+        <text x="14" y="290" font-family="sans-serif" font-size="8" fill="#8AA0B0">💡 Sala encendida · 2 min</text>
+        <text x="14" y="308" font-family="sans-serif" font-size="8" fill="#8AA0B0">🌡 Temp. → 22°C · 15 min</text>
+      </svg>
+    </div>
+
+    <!-- Luz -->
+    <div class="screen-card reveal" style="transition-delay:.3s">
+      <div class="screen-bar"><span style="background:#F87171"></span><span style="background:#FBBF24"></span><span style="background:#34D399"></span></div>
+      <svg class="screen-content" viewBox="0 0 220 390" fill="none">
+        <rect width="220" height="390" fill="#05080C"/>
+        <rect width="220" height="40" fill="#0A0F16"/>
+        <text x="14" y="25" font-family="sans-serif" font-size="11" font-weight="bold" fill="#00F0C8">← Luz Sala</text>
+        <circle cx="110" cy="130" r="55" fill="rgba(0,240,200,.05)" stroke="rgba(0,240,200,.2)" stroke-width="1"/>
+        <circle cx="110" cy="130" r="35" fill="rgba(0,240,200,.1)"/>
+        <text x="110" y="120" font-family="sans-serif" font-size="28" text-anchor="middle">💡</text>
+        <text x="110" y="145" font-family="sans-serif" font-size="9" fill="#00F0C8" text-anchor="middle">ENCENDIDA</text>
+        <text x="14" y="215" font-family="sans-serif" font-size="10" font-weight="bold" fill="#F0F4FF">Brillo</text>
+        <rect x="14" y="225" width="192" height="8" rx="4" fill="#0A0F16"/>
+        <rect x="14" y="225" width="138" height="8" rx="4" fill="#00F0C8"/>
+        <circle cx="152" cy="229" r="10" fill="#fff" stroke="#00F0C8" stroke-width="2"/>
+        <text x="110" y="255" font-family="sans-serif" font-size="12" fill="#00F0C8" text-anchor="middle">72%</text>
+        <rect x="14" y="280" width="192" height="44" rx="8" fill="#00F0C8"/>
+        <text x="110" y="307" font-family="sans-serif" font-size="11" font-weight="bold" fill="#05080C" text-anchor="middle">APAGAR</text>
+      </svg>
+    </div>
+
+    <!-- Historial -->
+    <div class="screen-card reveal" style="transition-delay:.4s">
+      <div class="screen-bar"><span style="background:#F87171"></span><span style="background:#FBBF24"></span><span style="background:#34D399"></span></div>
+      <svg class="screen-content" viewBox="0 0 220 390" fill="none">
+        <rect width="220" height="390" fill="#05080C"/>
+        <rect width="220" height="40" fill="#0A0F16"/>
+        <text x="14" y="25" font-family="sans-serif" font-size="11" font-weight="bold" fill="#00F0C8">Historial</text>
+        <text x="14" y="65" font-family="sans-serif" font-size="10" font-weight="bold" fill="#4A6070">HOY</text>
+        <rect x="14" y="74" width="192" height="1" fill="rgba(0,240,200,.08)"/>
+        <!-- Items -->
+        <rect x="14" y="82" width="192" height="38" rx="6" fill="#0A0F16"/>
+        <text x="26" y="100" font-family="sans-serif" font-size="9" fill="#F0F4FF">💡 Sala — encendida</text>
+        <text x="26" y="113" font-family="sans-serif" font-size="8" fill="#4A6070">hace 2 min</text>
+        <rect x="14" y="126" width="192" height="38" rx="6" fill="#0A0F16"/>
+        <text x="26" y="144" font-family="sans-serif" font-size="9" fill="#F0F4FF">🌡 Calef. → 22°C</text>
+        <text x="26" y="157" font-family="sans-serif" font-size="8" fill="#4A6070">hace 15 min</text>
+        <rect x="14" y="170" width="192" height="38" rx="6" fill="#0A0F16"/>
+        <text x="26" y="188" font-family="sans-serif" font-size="9" fill="#F0F4FF">💡 Dormitorio — apagado</text>
+        <text x="26" y="201" font-family="sans-serif" font-size="8" fill="#4A6070">hace 1h</text>
+        <text x="14" y="230" font-family="sans-serif" font-size="10" font-weight="bold" fill="#4A6070">AYER</text>
+        <rect x="14" y="238" width="192" height="1" fill="rgba(0,240,200,.08)"/>
+        <rect x="14" y="246" width="192" height="38" rx="6" fill="#0A0F16"/>
+        <text x="26" y="264" font-family="sans-serif" font-size="9" fill="#F0F4FF">🔒 Alarma activada</text>
+        <text x="26" y="277" font-family="sans-serif" font-size="8" fill="#4A6070">23:45</text>
+        <rect x="14" y="310" width="192" height="36" rx="6" fill="rgba(248,113,113,.1)" stroke="rgba(248,113,113,.2)" stroke-width="1"/>
+        <text x="110" y="332" font-family="sans-serif" font-size="9" fill="#F87171" text-anchor="middle">🗑 Limpiar historial</text>
+      </svg>
+    </div>
+
+    <!-- Registro -->
+    <div class="screen-card reveal" style="transition-delay:.5s">
+      <div class="screen-bar"><span style="background:#F87171"></span><span style="background:#FBBF24"></span><span style="background:#34D399"></span></div>
+      <svg class="screen-content" viewBox="0 0 220 390" fill="none">
+        <rect width="220" height="390" fill="#05080C"/>
+        <rect width="220" height="40" fill="#0A0F16"/>
+        <text x="14" y="25" font-family="sans-serif" font-size="11" font-weight="bold" fill="#00F0C8">← Crear cuenta</text>
+        <text x="110" y="65" font-family="sans-serif" font-size="14" font-weight="bold" fill="#F0F4FF" text-anchor="middle">Únete a EcoHome</text>
+        <rect x="14" y="80" width="192" height="34" rx="6" fill="#0A0F16" stroke="rgba(0,240,200,.2)" stroke-width="1"/>
+        <text x="24" y="101" font-family="sans-serif" font-size="9" fill="#4A6070">Nombre completo</text>
+        <rect x="14" y="122" width="192" height="34" rx="6" fill="#0A0F16" stroke="rgba(0,240,200,.2)" stroke-width="1"/>
+        <text x="24" y="143" font-family="sans-serif" font-size="9" fill="#4A6070">Email</text>
+        <rect x="14" y="164" width="192" height="34" rx="6" fill="#0A0F16" stroke="rgba(0,240,200,.2)" stroke-width="1"/>
+        <text x="24" y="185" font-family="sans-serif" font-size="9" fill="#4A6070">Contraseña (mín. 8 chars)</text>
+        <rect x="14" y="210" width="192" height="34" rx="6" fill="#0A0F16" stroke="rgba(0,240,200,.2)" stroke-width="1"/>
+        <text x="24" y="231" font-family="sans-serif" font-size="9" fill="#4A6070">Confirmar contraseña</text>
+        <rect x="18" y="253" width="12" height="12" rx="2" fill="rgba(0,240,200,.2)" stroke="rgba(0,240,200,.4)" stroke-width="1"/>
+        <text x="36" y="263" font-family="sans-serif" font-size="7" fill="#4A6070">Acepto la política de privacidad (RGPD)</text>
+        <rect x="14" y="278" width="192" height="40" rx="6" fill="#00F0C8"/>
+        <text x="110" y="303" font-family="sans-serif" font-size="11" font-weight="bold" fill="#05080C" text-anchor="middle">CREAR CUENTA</text>
+      </svg>
+    </div>
 
   </div>
 </section>
 
-<!-- CÓMO FUNCIONA -->
-<section class="how">
-  <p class="section-label">Cómo funciona</p>
-  <div class="steps">
-    <div class="step">
-      <div class="step-num">01</div>
-      <h3>Descarga e instala</h3>
-      <p>Descarga el instalador para tu sistema operativo y ejecútalo. No requiere Java instalado.</p>
+<!-- DOWNLOADS -->
+<section class="downloads" id="descargas">
+  <div class="inner">
+    <div class="reveal" style="text-align:center;margin-bottom:3rem">
+      <p class="sec-label">Descarga</p>
+      <h2 class="sec-title">Elige tu plataforma</h2>
+      <p style="color:var(--mid);font-size:.9rem;margin-top:.5rem">Instala EcoHome en segundos. Sin suscripciones, sin límites.</p>
     </div>
-    <div class="step">
-      <div class="step-num">02</div>
-      <h3>Crea tu cuenta</h3>
-      <p>Regístrate con tu email. Tus datos se guardan de forma segura con cifrado BCrypt y JWT.</p>
-    </div>
-    <div class="step">
-      <div class="step-num">03</div>
-      <h3>Conecta tus dispositivos</h3>
-      <p>Añade luces, calefacción y sensores. Controla todo en tiempo real desde cualquier lugar.</p>
+    <div class="dl-grid">
+      <a href="WINDOWS_DOWNLOAD_URL" class="dl-card" style="--pcolor:#0078D4">
+        <div>
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="#0078D4"><path d="M3 12V6.75l6-1.32v6.57H3zm17-9v8.75h-7V3.5L20 3zM3 13h6v6.57l-6-1.32V13zm17 0v8.75l-7-1.05V13h7z"/></svg>
+        </div>
+        <div class="dl-os" style="color:#0078D4">Windows</div>
+        <p class="dl-spec">Windows 10 / 11 · x64<br>JRE incluido · Sin requisitos previos<br>~65 MB · .zip</p>
+        <div class="dl-btn">
+          <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zm-8 2V5h2v6h1.17L12 13.17 9.83 11H11zm-6 7h14v2H5z"/></svg>
+          Descargar .zip
+        </div>
+      </a>
+      <a class="dl-card soon" style="--pcolor:#FF6600">
+        <div><svg width="32" height="32" viewBox="0 0 24 24" fill="#FF6600"><path d="M12 2a10 10 0 100 20A10 10 0 0012 2zm0 18a8 8 0 110-16 8 8 0 010 16zm-1-5h2v2h-2zm0-8h2v6h-2z"/></svg></div>
+        <div class="dl-os" style="color:#FF6600">Linux</div>
+        <p class="dl-spec">Ubuntu · Debian · Fedora<br>.deb / .rpm<br>Próximamente</p>
+        <div class="dl-btn" style="color:var(--muted)">Próximamente</div>
+      </a>
+      <a class="dl-card soon" style="--pcolor:#A2AAAD">
+        <div><svg width="32" height="32" viewBox="0 0 24 24" fill="#A2AAAD"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg></div>
+        <div class="dl-os" style="color:#A2AAAD">macOS</div>
+        <p class="dl-spec">macOS 12+ · Intel & Apple Silicon<br>.dmg<br>Próximamente</p>
+        <div class="dl-btn" style="color:var(--muted)">Próximamente</div>
+      </a>
+      <a class="dl-card soon" style="--pcolor:#3DDC84">
+        <div><svg width="32" height="32" viewBox="0 0 24 24" fill="#3DDC84"><path d="M6 18c0 .55.45 1 1 1h1v3.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5V19h2v3.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5V19h1c.55 0 1-.45 1-1V8H6v10zM3.5 8C2.67 8 2 8.67 2 9.5v7c0 .83.67 1.5 1.5 1.5S5 17.33 5 16.5v-7C5 8.67 4.33 8 3.5 8zm17 0c-.83 0-1.5.67-1.5 1.5v7c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5v-7c0-.83-.67-1.5-1.5-1.5zm-4.97-5.84l1.3-1.3c.2-.2.2-.51 0-.71-.2-.2-.51-.2-.71 0l-1.48 1.48C13.85 1.23 12.95 1 12 1c-.96 0-1.86.23-2.66.63L7.85.15c-.2-.2-.51-.2-.71 0-.2.2-.2.51 0 .71l1.31 1.31C6.97 3.26 6 5.01 6 7h12c0-1.99-.97-3.75-2.47-4.84zM10 5H9V4h1v1zm5 0h-1V4h1v1z"/></svg></div>
+        <div class="dl-os" style="color:#3DDC84">Android</div>
+        <p class="dl-spec">Android 8.0+<br>Google Play Store<br>Próximamente</p>
+        <div class="dl-btn" style="color:var(--muted)">Próximamente</div>
+      </a>
     </div>
   </div>
 </section>
 
 <!-- FOOTER -->
 <footer>
-  <span>© 2026 EcoHome · Julián Blanco Elvira</span>
-  <div class="api-status">
-    <span class="status-dot" id="statusDot"></span>
-    <span id="statusText">Comprobando servidor…</span>
-  </div>
-  <a href="/api/privacy" style="color:var(--muted);text-decoration:none" target="_blank">Privacidad</a>
+  <div class="footer-logo">Eco<span>Home</span></div>
+  <p>© 2026 Julián Blanco Elvira · Todos los derechos reservados</p>
 </footer>
 
 <script>
-  // Comprueba si la API está disponible
-  async function checkApi() {
-    const dot  = document.getElementById('statusDot');
-    const text = document.getElementById('statusText');
-    try {
-      const r = await fetch('/api/privacy', { signal: AbortSignal.timeout(4000) });
-      if (r.ok) {
-        dot.className  = 'status-dot online';
-        text.textContent = 'Servidor online';
-      } else {
-        throw new Error();
-      }
-    } catch {
-      dot.className  = 'status-dot offline';
-      text.textContent = 'Servidor no disponible';
-    }
-  }
-  checkApi();
+// Cursor glow
+const glow = document.getElementById('cursorGlow');
+document.addEventListener('mousemove', e => {
+  glow.style.left = e.clientX + 'px';
+  glow.style.top  = e.clientY + 'px';
+});
 
-  // Scroll suave al ancla de descargas
-  document.querySelectorAll('a[href="#descargas"]').forEach(a => {
-    a.addEventListener('click', e => {
-      e.preventDefault();
-      document.getElementById('descargas').scrollIntoView({ behavior: 'smooth' });
-    });
+// Nav scroll
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 60);
+});
+
+// Partículas
+const pc = document.getElementById('particles');
+for (let i = 0; i < 25; i++) {
+  const p = document.createElement('div');
+  p.className = 'particle';
+  const size = Math.random() * 3 + 1;
+  const x    = Math.random() * 100;
+  const dur  = Math.random() * 15 + 10;
+  const del  = Math.random() * 10;
+  const dx   = (Math.random() - .5) * 80 + 'px';
+  p.style.cssText = `
+    width:${size}px;height:${size}px;left:${x}%;bottom:-10px;
+    animation-duration:${dur}s;animation-delay:${del}s;
+    --dx:${dx};opacity:.5;
+  `;
+  pc.appendChild(p);
+}
+
+// Reveal on scroll
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      io.unobserve(e.target);
+    }
   });
+}, { threshold: .12 });
+document.querySelectorAll('.reveal,.reveal-left,.reveal-right').forEach(el => io.observe(el));
+
+// Contadores animados
+const counters = document.querySelectorAll('[data-target]');
+const cio = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    const target = +e.target.dataset.target;
+    let curr = 0;
+    const step = target / 30;
+    const t = setInterval(() => {
+      curr = Math.min(curr + step, target);
+      e.target.textContent = Math.round(curr);
+      if (curr >= target) clearInterval(t);
+    }, 40);
+    cio.unobserve(e.target);
+  });
+}, { threshold: .5 });
+counters.forEach(c => cio.observe(c));
+
 </script>
 </body>
 </html>
