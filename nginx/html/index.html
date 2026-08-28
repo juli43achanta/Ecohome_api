@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EcoHome</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500&display=swap">
+<style>
+  :root {
+    --bg:         #0D1B2A;
+    --surface:    #1A2B3C;
+    --surface2:   #223344;
+    --border:     rgba(0,201,177,.15);
+    --accent:     #00C9B1;
+    --accent-dim: rgba(0,201,177,.12);
+    --text:       #E8F4F2;
+    --muted:      #6B8A95;
+    --danger:     #FF6B6B;
+    --win-color:  #0078D4;
+    --linux-color:#FF6600;
+    --mac-color:  #A2AAAD;
+    --and-color:  #3DDC84;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 1rem;
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Grid texture */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,201,177,.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,201,177,.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── NAV ─────────────────────────────────────────────────────── */
+  nav {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 2.5rem;
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(8px);
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: .65rem;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 1.2rem;
+    letter-spacing: -.02em;
+    color: var(--text);
+    text-decoration: none;
+  }
+
+  .logo-icon {
+    width: 32px; height: 32px;
+    background: var(--accent);
+    border-radius: 8px;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+  }
+
+  .logo-icon svg { width: 18px; height: 18px; fill: #0D1B2A; }
+
+  .badge {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: .7rem;
+    font-weight: 600;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    padding: .2rem .55rem;
+    border-radius: 4px;
+    background: var(--accent-dim);
+    color: var(--accent);
+    border: 1px solid var(--border);
+  }
+
+  /* ── HERO ────────────────────────────────────────────────────── */
+  .hero {
+    position: relative;
+    z-index: 1;
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 5rem 2.5rem 4rem;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 3rem;
+    align-items: center;
+  }
+
+  @media (max-width: 760px) {
+    .hero { grid-template-columns: 1fr; }
+    .hero-visual { display: none; }
+  }
+
+  .eyebrow {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: .78rem;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: .8rem;
+  }
+
+  h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(2.4rem, 5vw, 3.6rem);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -.03em;
+    text-wrap: balance;
+    color: var(--text);
+    margin-bottom: 1.1rem;
+  }
+
+  h1 span { color: var(--accent); }
+
+  .subtitle {
+    font-size: 1.1rem;
+    color: var(--muted);
+    max-width: 44ch;
+    line-height: 1.65;
+    margin-bottom: 2.2rem;
+  }
+
+  .hero-cta {
+    display: flex;
+    gap: .75rem;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    padding: .7rem 1.4rem;
+    border-radius: 6px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: .9rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all .18s ease;
+    cursor: pointer;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #0D1B2A;
+    border: 1px solid transparent;
+  }
+  .btn-primary:hover { background: #00b39e; transform: translateY(-1px); }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+  .btn-outline:hover { background: var(--surface); border-color: var(--accent); }
+
+  /* Hero visual */
+  .hero-visual {
+    width: 220px;
+    aspect-ratio: 1;
+    position: relative;
+  }
+
+  .hero-visual svg { width: 100%; height: 100%; }
+
+  /* ── STATS ───────────────────────────────────────────────────── */
+  .stats {
+    position: relative;
+    z-index: 1;
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0 2.5rem 3.5rem;
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .stat {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    font-size: .85rem;
+    color: var(--muted);
+  }
+
+  .stat strong {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .stat-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+  }
+
+  /* ── DOWNLOADS ───────────────────────────────────────────────── */
+  .section {
+    position: relative;
+    z-index: 1;
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0 2.5rem 5rem;
+  }
+
+  .section-label {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: .72rem;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1.4rem;
+  }
+
+  .downloads {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+  }
+
+  @media (max-width: 900px) { .downloads { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 500px) { .downloads { grid-template-columns: 1fr; } }
+
+  .dl-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.6rem 1.4rem;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    gap: .85rem;
+    transition: all .18s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .dl-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--platform-color, var(--accent));
+    opacity: 0;
+    transition: opacity .18s;
+  }
+
+  .dl-card:hover {
+    background: var(--surface2);
+    transform: translateY(-2px);
+    border-color: color-mix(in srgb, var(--platform-color, var(--accent)) 40%, transparent);
+  }
+
+  .dl-card:hover::before { opacity: 1; }
+
+  .dl-icon {
+    width: 44px; height: 44px;
+    border-radius: 10px;
+    display: grid;
+    place-items: center;
+    background: color-mix(in srgb, var(--platform-color, var(--accent)) 12%, transparent);
+  }
+
+  .dl-icon svg { width: 24px; height: 24px; }
+
+  .dl-name {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .dl-desc {
+    font-size: .82rem;
+    color: var(--muted);
+    line-height: 1.5;
+    flex: 1;
+  }
+
+  .dl-action {
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: .8rem;
+    font-weight: 600;
+    color: var(--platform-color, var(--accent));
+  }
+
+  .dl-soon {
+    opacity: .45;
+    pointer-events: none;
+    cursor: default;
+  }
+
+  .dl-soon .dl-action { color: var(--muted); }
+
+  .soon-tag {
+    font-size: .65rem;
+    font-weight: 600;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    padding: .15rem .4rem;
+    border-radius: 3px;
+    background: var(--surface2);
+    color: var(--muted);
+    border: 1px solid rgba(255,255,255,.06);
+  }
+
+  /* ── HOW IT WORKS ─────────────────────────────────────────────── */
+  .how {
+    position: relative;
+    z-index: 1;
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0 2.5rem 5rem;
+  }
+
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+
+  @media (max-width: 700px) { .steps { grid-template-columns: 1fr; } }
+
+  .step {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem 1.4rem;
+  }
+
+  .step-num {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--accent);
+    opacity: .35;
+    margin-bottom: .6rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .step h3 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: .95rem;
+    font-weight: 600;
+    margin-bottom: .4rem;
+    color: var(--text);
+  }
+
+  .step p {
+    font-size: .83rem;
+    color: var(--muted);
+    line-height: 1.55;
+  }
+
+  /* ── FOOTER ──────────────────────────────────────────────────── */
+  footer {
+    position: relative;
+    z-index: 1;
+    border-top: 1px solid var(--border);
+    padding: 1.5rem 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    font-size: .8rem;
+    color: var(--muted);
+  }
+
+  .api-status {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: .75rem;
+    font-weight: 500;
+  }
+
+  .status-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--muted);
+    transition: background .3s;
+  }
+  .status-dot.online  { background: var(--accent); box-shadow: 0 0 6px var(--accent); }
+  .status-dot.offline { background: var(--danger); }
+
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 0 2.5rem 3rem;
+    position: relative;
+    z-index: 1;
+    max-width: calc(1120px - 5rem);
+    margin-left: auto;
+    margin-right: auto;
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="/" class="logo">
+    <span class="logo-icon">
+      <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+    </span>
+    EcoHome
+  </a>
+  <span class="badge">v1.0.0</span>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div>
+    <p class="eyebrow">Domótica inteligente</p>
+    <h1>Tu hogar,<br><span>siempre conectado</span></h1>
+    <p class="subtitle">
+      Controla luces, calefacción y dispositivos IoT desde cualquier dispositivo.
+      Instala la app en minutos y conéctate a tu servidor EcoHome.
+    </p>
+    <div class="hero-cta">
+      <a href="#descargas" class="btn btn-primary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zm-8 2V5h2v6h1.17L12 13.17 9.83 11H11zm-6 7h14v2H5z"/></svg>
+        Descargar app
+      </a>
+      <a href="/api/privacy" class="btn btn-outline" target="_blank">
+        Ver API
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
+      </a>
+    </div>
+  </div>
+
+  <!-- Ilustración casa SVG -->
+  <div class="hero-visual" aria-hidden="true">
+    <svg viewBox="0 0 220 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#00C9B1" stop-opacity=".25"/>
+          <stop offset="100%" stop-color="#00C9B1" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <circle cx="110" cy="110" r="100" fill="url(#glow)"/>
+      <circle cx="110" cy="110" r="90" stroke="#00C9B1" stroke-opacity=".08" stroke-width="1"/>
+      <circle cx="110" cy="110" r="65" stroke="#00C9B1" stroke-opacity=".12" stroke-width="1"/>
+
+      <!-- Casa -->
+      <path d="M60 120 L110 70 L160 120 L160 170 L60 170 Z" fill="#1A2B3C" stroke="#00C9B1" stroke-width="1.5" stroke-opacity=".5"/>
+      <!-- Tejado -->
+      <path d="M52 122 L110 62 L168 122" stroke="#00C9B1" stroke-width="2" stroke-linecap="round"/>
+      <!-- Puerta -->
+      <rect x="95" y="140" width="30" height="30" rx="15" fill="#00C9B1" fill-opacity=".15" stroke="#00C9B1" stroke-width="1" stroke-opacity=".5"/>
+      <!-- Ventanas -->
+      <rect x="68" y="128" width="22" height="18" rx="2" fill="#00C9B1" fill-opacity=".2" stroke="#00C9B1" stroke-opacity=".4" stroke-width="1"/>
+      <rect x="130" y="128" width="22" height="18" rx="2" fill="#00C9B1" fill-opacity=".2" stroke="#00C9B1" stroke-opacity=".4" stroke-width="1"/>
+
+      <!-- Puntos IoT -->
+      <circle cx="79" cy="137" r="3" fill="#00C9B1" opacity=".8"/>
+      <circle cx="141" cy="137" r="3" fill="#00C9B1" opacity=".8"/>
+      <circle cx="110" cy="95" r="3" fill="#00C9B1" opacity=".6"/>
+
+      <!-- Señal wifi -->
+      <path d="M102 88 Q110 82 118 88" stroke="#00C9B1" stroke-opacity=".5" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      <path d="M97 84 Q110 75 123 84" stroke="#00C9B1" stroke-opacity=".3" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    </svg>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat"><span class="stat-dot"></span><strong>4</strong> módulos IoT</div>
+  <div class="stat"><span class="stat-dot"></span><strong>JWT</strong> autenticación segura</div>
+  <div class="stat"><span class="stat-dot"></span><strong>MQTT</strong> tiempo real</div>
+  <div class="stat"><span class="stat-dot"></span><strong>Open source</strong></div>
+</div>
+
+<div class="divider"></div>
+
+<!-- DESCARGAS -->
+<section class="section" id="descargas">
+  <p class="section-label">Descarga · Elige tu plataforma</p>
+  <div class="downloads">
+
+    <!-- Windows -->
+    <a href="WINDOWS_DOWNLOAD_URL" class="dl-card" style="--platform-color: #0078D4" id="win-card">
+      <div class="dl-icon" style="--platform-color: #0078D4">
+        <svg viewBox="0 0 24 24" fill="#0078D4"><path d="M3 12V6.75l6-1.32v6.57H3zm17-9v8.75h-7V3.5L20 3zM3 13h6v6.57l-6-1.32V13zm17 0v8.75l-7-1.05V13h7z"/></svg>
+      </div>
+      <div>
+        <p class="dl-name">Windows</p>
+        <p class="dl-desc">Windows 10 / 11 · x64<br>Incluye JRE — sin instalaciones previas</p>
+      </div>
+      <div class="dl-action">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zm-8 2V5h2v6h1.17L12 13.17 9.83 11H11zm-6 7h14v2H5z"/></svg>
+        Descargar .zip
+      </div>
+    </a>
+
+    <!-- Linux -->
+    <a href="LINUX_DOWNLOAD_URL" class="dl-card dl-soon" style="--platform-color: #FF6600">
+      <div class="dl-icon" style="--platform-color: #FF6600">
+        <svg viewBox="0 0 24 24" fill="#FF6600"><path d="M12 2a10 10 0 100 20A10 10 0 0012 2zm0 18a8 8 0 110-16 8 8 0 010 16zm-1-5h2v2h-2zm0-8h2v6h-2z"/></svg>
+      </div>
+      <div>
+        <p class="dl-name">Linux <span class="soon-tag">Próximamente</span></p>
+        <p class="dl-desc">Ubuntu · Debian · Fedora<br>.deb y .rpm</p>
+      </div>
+      <div class="dl-action">Próximamente</div>
+    </a>
+
+    <!-- Mac -->
+    <a href="MAC_DOWNLOAD_URL" class="dl-card dl-soon" style="--platform-color: #A2AAAD">
+      <div class="dl-icon" style="--platform-color: #A2AAAD">
+        <svg viewBox="0 0 24 24" fill="#A2AAAD"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+      </div>
+      <div>
+        <p class="dl-name">macOS <span class="soon-tag">Próximamente</span></p>
+        <p class="dl-desc">macOS 12 Monterey o superior<br>Intel y Apple Silicon</p>
+      </div>
+      <div class="dl-action">Próximamente</div>
+    </a>
+
+    <!-- Android -->
+    <a href="PLAY_STORE_URL" class="dl-card dl-soon" style="--platform-color: #3DDC84">
+      <div class="dl-icon" style="--platform-color: #3DDC84">
+        <svg viewBox="0 0 24 24" fill="#3DDC84"><path d="M17.523 15.341L6.477 8.66A1.5 1.5 0 004 9.928v10.144a1.5 1.5 0 002.477 1.268l11.046-6.682a1.5 1.5 0 000-2.317z"/></svg>
+      </div>
+      <div>
+        <p class="dl-name">Android <span class="soon-tag">Próximamente</span></p>
+        <p class="dl-desc">Android 8.0+<br>Disponible en Google Play</p>
+      </div>
+      <div class="dl-action">Ver en Play Store</div>
+    </a>
+
+  </div>
+</section>
+
+<!-- CÓMO FUNCIONA -->
+<section class="how">
+  <p class="section-label">Cómo funciona</p>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">01</div>
+      <h3>Descarga e instala</h3>
+      <p>Descarga el instalador para tu sistema operativo y ejecútalo. No requiere Java instalado.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <h3>Crea tu cuenta</h3>
+      <p>Regístrate con tu email. Tus datos se guardan de forma segura con cifrado BCrypt y JWT.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <h3>Conecta tus dispositivos</h3>
+      <p>Añade luces, calefacción y sensores. Controla todo en tiempo real desde cualquier lugar.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span>© 2026 EcoHome · Julián Blanco Elvira</span>
+  <div class="api-status">
+    <span class="status-dot" id="statusDot"></span>
+    <span id="statusText">Comprobando servidor…</span>
+  </div>
+  <a href="/api/privacy" style="color:var(--muted);text-decoration:none" target="_blank">Privacidad</a>
+</footer>
+
+<script>
+  // Comprueba si la API está disponible
+  async function checkApi() {
+    const dot  = document.getElementById('statusDot');
+    const text = document.getElementById('statusText');
+    try {
+      const r = await fetch('/api/privacy', { signal: AbortSignal.timeout(4000) });
+      if (r.ok) {
+        dot.className  = 'status-dot online';
+        text.textContent = 'Servidor online';
+      } else {
+        throw new Error();
+      }
+    } catch {
+      dot.className  = 'status-dot offline';
+      text.textContent = 'Servidor no disponible';
+    }
+  }
+  checkApi();
+
+  // Scroll suave al ancla de descargas
+  document.querySelectorAll('a[href="#descargas"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      document.getElementById('descargas').scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+</script>
+</body>
+</html>
