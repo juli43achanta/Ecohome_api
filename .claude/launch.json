@@ -1,0 +1,15 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "EcoHome API",
+      "runtimeExecutable": "C:/Users/Julian/AppData/Local/maven/apache-maven-3.9.9/bin/mvn.cmd",
+      "runtimeArgs": [
+        "-f",
+        "G:/Mi unidad/Programacion/DAM2/TFG/DAM-2026-ECOHOME_API/pom.xml",
+        "spring-boot:run"
+      ],
+      "port": 8080
+    }
+  ]
+}
