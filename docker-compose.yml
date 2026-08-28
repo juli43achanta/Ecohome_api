@@ -1,0 +1,55 @@
+version: "3.9"
+
+services:
+
+  # ── Base de datos ────────────────────────────────────────────────────────────
+  mysql:
+    image: mysql:8.0
+    container_name: ecohome-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-EcoHomeRoot2026!}
+      MYSQL_DATABASE:      ecohome_db
+      MYSQL_USER:          ${DB_USER:-ecohome_app}
+      MYSQL_PASSWORD:      ${DB_PASSWORD:-EcoHome2026!}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    ports:
+      - "3306:3306"          # solo para acceso local/debug; quitar en prod si no hace falta
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost",
+             "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-EcoHomeRoot2026!}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  # ── API Spring Boot ──────────────────────────────────────────────────────────
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ecohome-api
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      DB_URL:            jdbc:mysql://mysql:3306/ecohome_db?useSSL=false&serverTimezone=Europe/Madrid&allowPublicKeyRetrieval=true
+      DB_USER:           ${DB_USER:-ecohome_app}
+      DB_PASSWORD:       ${DB_PASSWORD:-EcoHome2026!}
+      JWT_SECRET:        ${JWT_SECRET:-EcoHomeDevSecretKey2026ParaDesarrolloLocalUnicamente!!}
+      JWT_EXPIRATION_MS: ${JWT_EXPIRATION_MS:-3600000}
+      MQTT_ENABLED:      ${MQTT_ENABLED:-false}
+      CORS_ORIGINS:      ${CORS_ORIGINS:-http://localhost:3000}
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/api/privacy || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+volumes:
+  mysql_data:
+    driver: local

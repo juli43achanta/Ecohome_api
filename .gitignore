@@ -5,5 +5,7 @@ target/
 .idea/
 *.iml
 .env
+.env.local
+.env.production
 application-prod.properties
 application-local.properties
