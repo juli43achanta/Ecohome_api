@@ -5,16 +5,18 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 @Component
+@ConditionalOnProperty(name = "ecohome.mqtt.enabled", havingValue = "true")
 public class MqttPublisher {
 
     private static final Logger log = LoggerFactory.getLogger(MqttPublisher.class);
 
     private final MqttClient mqttClient;
 
-    @Autowired(required = false)
+    @Autowired
     public MqttPublisher(MqttClient mqttClient) {
         this.mqttClient = mqttClient;
     }

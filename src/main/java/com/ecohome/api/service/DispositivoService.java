@@ -8,6 +8,8 @@ import com.ecohome.api.mqtt.MqttPublisher;
 import com.ecohome.api.repository.DispositivoRepository;
 import com.ecohome.api.repository.HistorialRepository;
 import com.ecohome.api.repository.UsuarioRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +28,7 @@ public class DispositivoService {
     public DispositivoService(DispositivoRepository dispositivoRepository,
                                UsuarioRepository usuarioRepository,
                                HistorialRepository historialRepository,
-                               MqttPublisher mqttPublisher,
+                               @Autowired(required = false) @Nullable MqttPublisher mqttPublisher,
                                SimpMessagingTemplate websocket) {
         this.dispositivoRepository = dispositivoRepository;
         this.usuarioRepository = usuarioRepository;
