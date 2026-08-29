@@ -25,6 +25,9 @@ public class JwtUtil {
     @Value("${ecohome.jwt.expiration-ms}")
     private long expirationMs;
 
+    @Value("${spring.profiles.active:dev}")
+    private String perfilActivo;
+
     @PostConstruct
     public void validarSecreto() {
         if (secret.getBytes(StandardCharsets.UTF_8).length < 32) {
@@ -32,7 +35,13 @@ public class JwtUtil {
                 "JWT_SECRET debe tener al menos 32 caracteres para HS256. " +
                 "Configura la variable de entorno JWT_SECRET.");
         }
+        boolean esProduccion = perfilActivo.toLowerCase().contains("prod");
         if (DEV_SECRET.equals(secret)) {
+            if (esProduccion) {
+                throw new IllegalStateException(
+                    "JWT_SECRET usa el valor de DESARROLLO con spring.profiles.active=" + perfilActivo + ". " +
+                    "Configura la variable de entorno JWT_SECRET con un secreto real antes de desplegar.");
+            }
             log.warn("⚠️  JWT_SECRET usa el valor de DESARROLLO. " +
                      "Configura la variable de entorno JWT_SECRET antes de desplegar en producción.");
         }
