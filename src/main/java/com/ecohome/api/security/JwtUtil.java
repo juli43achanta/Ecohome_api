@@ -1,5 +1,6 @@
 package com.ecohome.api.security;
 
+import com.ecohome.api.repository.UsuarioRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
@@ -18,6 +19,9 @@ public class JwtUtil {
 
     private static final Logger log = LoggerFactory.getLogger(JwtUtil.class);
     private static final String DEV_SECRET = "EcoHomeDevSecretKey2026ParaDesarrolloLocalUnicamente!!";
+    private static final String CLAIM_TOKEN_VERSION = "tv";
+
+    private final UsuarioRepository usuarioRepository;
 
     @Value("${ecohome.jwt.secret}")
     private String secret;
@@ -27,6 +31,10 @@ public class JwtUtil {
 
     @Value("${spring.profiles.active:dev}")
     private String perfilActivo;
+
+    public JwtUtil(UsuarioRepository usuarioRepository) {
+        this.usuarioRepository = usuarioRepository;
+    }
 
     @PostConstruct
     public void validarSecreto() {
@@ -51,10 +59,11 @@ public class JwtUtil {
         return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String generarToken(UserDetails userDetails) {
+    public String generarToken(UserDetails userDetails, Integer tokenVersion) {
         return Jwts.builder()
                 .subject(userDetails.getUsername())
                 .claim("roles", userDetails.getAuthorities().toString())
+                .claim(CLAIM_TOKEN_VERSION, tokenVersion)
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + expirationMs))
                 .signWith(key())
@@ -68,7 +77,14 @@ public class JwtUtil {
     public boolean esValido(String token, UserDetails userDetails) {
         try {
             String email = extraerEmail(token);
-            return email.equals(userDetails.getUsername()) && !estaExpirado(token);
+            if (!email.equals(userDetails.getUsername()) || estaExpirado(token)) {
+                return false;
+            }
+            Integer tokenVersion = parsear(token).getPayload().get(CLAIM_TOKEN_VERSION, Integer.class);
+            Integer versionActual = usuarioRepository.findByEmail(email)
+                    .map(u -> u.getTokenVersion())
+                    .orElse(null);
+            return tokenVersion != null && tokenVersion.equals(versionActual);
         } catch (JwtException e) {
             return false;
         }
