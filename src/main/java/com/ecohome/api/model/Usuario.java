@@ -29,6 +29,9 @@ public class Usuario {
     @Column(name = "fecha_registro")
     private java.time.LocalDateTime fechaRegistro = java.time.LocalDateTime.now();
 
+    @Column(name = "token_version", nullable = false)
+    private Integer tokenVersion = 0;
+
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Dispositivo> dispositivos;
 
@@ -50,4 +53,6 @@ public class Usuario {
     public void setConsentimientoGdpr(Boolean v) { this.consentimientoGdpr = v; }
     public java.time.LocalDateTime getFechaRegistro() { return fechaRegistro; }
     public void setFechaRegistro(java.time.LocalDateTime v) { this.fechaRegistro = v; }
+    public Integer getTokenVersion() { return tokenVersion; }
+    public void setTokenVersion(Integer tokenVersion) { this.tokenVersion = tokenVersion; }
 }

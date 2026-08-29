@@ -36,12 +36,28 @@ public class AuthService {
         authManager.authenticate(
                 new UsernamePasswordAuthenticationToken(req.email(), req.password()));
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(req.email());
-        String token = jwtUtil.generarToken(userDetails);
-
         Usuario usuario = usuarioRepository.findByEmail(req.email()).orElseThrow();
+        UserDetails userDetails = userDetailsService.loadUserByUsername(req.email());
+        String token = jwtUtil.generarToken(userDetails, usuario.getTokenVersion());
+
         return new LoginResponse(token, usuario.getNombre(), usuario.getEmail(),
                 usuario.getRol().name(), usuario.getId());
+    }
+
+    public void cambiarPassword(Integer targetId, String currentPassword, String newPassword, boolean esResetDeAdmin) {
+        Usuario usuario = usuarioRepository.findById(targetId).orElseThrow();
+        if (!esResetDeAdmin && !passwordEncoder.matches(currentPassword, usuario.getPassword())) {
+            throw new IllegalArgumentException("La contraseña actual no es correcta");
+        }
+        usuario.setPassword(passwordEncoder.encode(newPassword));
+        usuario.setTokenVersion(usuario.getTokenVersion() + 1);
+        usuarioRepository.save(usuario);
+    }
+
+    public void cerrarSesionesActivas(Integer usuarioId) {
+        Usuario usuario = usuarioRepository.findById(usuarioId).orElseThrow();
+        usuario.setTokenVersion(usuario.getTokenVersion() + 1);
+        usuarioRepository.save(usuario);
     }
 
     public void registrar(RegistroRequest req) {
