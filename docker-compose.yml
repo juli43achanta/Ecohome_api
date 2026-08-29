@@ -15,7 +15,7 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
     ports:
-      - "3306:3306"          # solo para acceso local/debug; quitar en prod si no hace falta
+      - "3307:3306"          # 3307 en host para no chocar con MySQL local en Windows
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost",
              "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-EcoHomeRoot2026!}"]
@@ -34,13 +34,15 @@ services:
       mysql:
         condition: service_healthy
     environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-dev}
       DB_URL:            jdbc:mysql://mysql:3306/ecohome_db?useSSL=false&serverTimezone=Europe/Madrid&allowPublicKeyRetrieval=true
       DB_USER:           ${DB_USER:-ecohome_app}
       DB_PASSWORD:       ${DB_PASSWORD:-EcoHome2026!}
       JWT_SECRET:        ${JWT_SECRET:-EcoHomeDevSecretKey2026ParaDesarrolloLocalUnicamente!!}
       JWT_EXPIRATION_MS: ${JWT_EXPIRATION_MS:-3600000}
-      MQTT_ENABLED:      ${MQTT_ENABLED:-false}
-      CORS_ORIGINS:      ${CORS_ORIGINS:-http://localhost:3000}
+      MQTT_ENABLED:               ${MQTT_ENABLED:-false}
+      CORS_ORIGINS:               ${CORS_ORIGINS:-http://localhost:3000}
+      SPRING_FLYWAY_VALIDATE_ON_MIGRATE: "false"
     ports:
       - "8080:8080"
     healthcheck:

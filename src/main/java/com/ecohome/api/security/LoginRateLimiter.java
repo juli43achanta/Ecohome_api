@@ -1,5 +1,6 @@
 package com.ecohome.api.security;
 
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -24,5 +25,12 @@ public class LoginRateLimiter {
             return existente;
         });
         return ventana.contador().incrementAndGet() <= MAX_INTENTOS;
+    }
+
+    // Purga IPs inactivas para evitar crecimiento no acotado del mapa
+    @Scheduled(fixedRate = 300_000)
+    public void limpiar() {
+        long ahora = System.currentTimeMillis();
+        ventanas.entrySet().removeIf(e -> ahora - e.getValue().inicio() > VENTANA_MS);
     }
 }

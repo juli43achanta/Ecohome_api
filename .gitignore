@@ -9,3 +9,4 @@ target/
 .env.production
 application-prod.properties
 application-local.properties
+.claude/settings.local.json
